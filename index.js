@@ -1,4 +1,4 @@
-var clone = require('lodash.clone'),
+var _ = require('lodash'),
 	exec = require('child_process').exec,
 	fs = require('fs'),
 	path = require('path'),
@@ -51,7 +51,7 @@ function cliSpy(cli, stubFn) {
 
 	return {
 		exec: function(argStr, opts, callback) {
-			var options = opts && clone(opts) || {};
+			var options = opts && _.clone(opts) || {};
 
 			options.cwd = options.cwd || process.cwd();
 

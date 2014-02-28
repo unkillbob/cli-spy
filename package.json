@@ -1,6 +1,6 @@
 {
   "name": "cli-spy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Helper utility for testing isolated cli modules.",
   "main": "index.js",
   "repository": {
@@ -18,6 +18,6 @@
   "homepage": "https://github.com/unkillbob/cli-spy",
   "dependencies": {
     "q": "^1.0.0",
-    "lodash.clone": "^2.4.1"
+    "lodash": "^2.4.1"
   }
 }
