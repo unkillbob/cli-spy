@@ -14,7 +14,7 @@ Example usage (using [mocha](http://visionmedia.github.io/mocha/)) assuming the 
 - a cli module in `./lib/cli.js` whose sole purpose is to init the main module with the parsed args
 - tests in `./test/` but being run from the root application directory
 
-```
+```javascript
 var cliSpy = require('cli-spy');
 
 function stubIndexFn() {
