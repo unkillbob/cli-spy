@@ -35,12 +35,16 @@ function execCli(argStr, options) {
 			return deferred.reject(err);
 		}
 
-		var spiedArgStr = stdout.match(ARGS_STR_REGEX)[1];
-		deferred.resolve({
-			stdout: stdout,
-			stderr: stderr,
-			args: JSON.parse(spiedArgStr)
-		});
+		try {
+			var spiedArgStr = stdout.match(ARGS_STR_REGEX)[1];
+			deferred.resolve({
+				stdout: stdout,
+				stderr: stderr,
+				args: JSON.parse(spiedArgStr)
+			});
+		} catch(e) {
+			deferred.reject(e);
+		}
 	});
 
 	return deferred.promise;
@@ -51,6 +55,11 @@ function cliSpy(cli, stubFn) {
 
 	return {
 		exec: function(argStr, opts, callback) {
+			if (typeof opts === 'function') {
+				callback = opts;
+				opts = null;
+			}
+
 			var options = opts && _.clone(opts) || {};
 
 			options.cwd = options.cwd || process.cwd();
