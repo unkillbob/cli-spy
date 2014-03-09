@@ -72,7 +72,3 @@ The result of executing the CLI (either resolved via promise or returned via cal
 - **stdout** any output sent to `stdout` by the CLI. *Note:* this will also include the serialised arguments printed by the spy.
 - **stderr** any output sent to `stderr` by the CLI.
 - **args** JSON representation of the `arguments` passed to the stub main function.
-
-# Note on Windows Support
-
-Currently this doesn't work on Windows, see [#1](https://github.com/unkillbob/cli-spy/issues/1).

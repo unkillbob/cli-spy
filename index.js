@@ -28,9 +28,14 @@ function tearDown(cwd) {
 }
 
 function execCli(argStr, options) {
-	var deferred = Q.defer();
+	var deferred = Q.defer(),
+		cmd = path.join(options.cwd, CLI_SPY) + ' ' + argStr;
 
-	exec(path.join(options.cwd, CLI_SPY) + ' ' + argStr, options, function(err, stdout, stderr) {
+	if (process.platform === 'win32') {
+		cmd = 'node ' + cmd;
+	}
+
+	exec(cmd, options, function(err, stdout, stderr) {
 		if (err) {
 			return deferred.reject(err);
 		}
