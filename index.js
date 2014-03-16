@@ -51,7 +51,7 @@ function execCli(argStr, options) {
 		var spiedExecStrs = stdout.match(EXEC_STR_REGEX),
 			executions;
 
-		if (!spiedExecStrs.length) {
+		if (!spiedExecStrs || !spiedExecStrs.length) {
 			return deferred.reject('CLI did not execute index module.');
 		}
 

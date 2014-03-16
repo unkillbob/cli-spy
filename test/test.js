@@ -75,6 +75,37 @@ test('`exec` calls back with an error if the stub function does not include the 
 	});
 });
 
+test('`exec` returns a promise which is rejected if the stub function does not include the spy placeholder', function(t) {
+	var spy = cliSpy(stubCli, function() {
+			var index = require('./test/stub-index');
+			index.init = function() {};
+			index.neverExecuted = function() {
+				/*__spy__*/
+			};
+		}),
+		promise = spy.exec(),
+		catchCalled = false,
+		finallyCalled = false;
+
+	setTimeout(function() {
+		if (!finallyCalled) {
+			t.ok(catchCalled, '`exec` promise catch not called');
+			t.ok(finallyCalled, '`exec` promise finally not called');
+			t.end();
+		}
+	}, 500);
+
+	spy.exec()
+		.catch(function(err) {
+			catchCalled = true;
+			t.equal(err, 'CLI did not execute index module.');
+		})
+		.finally(function() {
+			finallyCalled = true;
+			t.end();
+		});
+});
+
 test('callback can be second argument to `exec`', function(t) {
 	var spy = cliSpy(stubCli, noOp),
 		callbackCalled = false;
