@@ -153,9 +153,11 @@ test('it reports the arguments passed to the stub function by the cli', function
 			t.ok(result);
 			t.type(result.stdout, 'string');
 			t.type(result.stderr, 'string');
-			t.type(result.args, 'object');
+			t.type(result.executions, 'object');
 
-			args = result.args;
+			t.equal(result.executions.length, 1);
+
+			args = result.executions[0].args;
 
 			t.equal(args[0], 'foo');
 			t.deepEqual(args[1], ['bar', 'baz']);
@@ -163,6 +165,55 @@ test('it reports the arguments passed to the stub function by the cli', function
 				beep: 'boop',
 				pirate: 'ninja',
 				cwd: process.cwd()
+			});
+
+			// The first execution's arguments, for backwards compatibility
+			t.type(result.args, 'object');
+			t.deepEqual(result.args, args);
+
+			t.end();
+		}, function(err) {
+			t.fail(err);
+		});
+});
+
+test('it reports the arguments for each execution of the stub index by the cli', function(t) {
+	var spy = cliSpy('./test/stub-cli-multi-exec', function() {
+			require('./test/stub-index').init = function() {
+				/*__spy__*/
+			};
+		}),
+		promiseResolved = false;
+
+	setTimeout(function() {
+		if (!promiseResolved) {
+			t.ok(promiseResolved, '`exec` promise should have been resolved');
+			t.end();
+		}
+	}, 500);
+
+	spy.exec('')
+		.then(function(result) {
+			var args;
+
+			promiseResolved = true;
+			t.ok(result);
+
+			t.equal(result.executions.length, 2);
+
+			args = result.executions[0].args;
+
+			t.equal(args[0], 'foo');
+			t.deepEqual(args[1], ['bar', 'baz']);
+
+			// The first execution's arguments, for backwards compatibility
+			t.type(result.args, 'object');
+			t.deepEqual(result.args, args);
+
+			args = result.executions[1].args;
+			t.deepEqual(args[0], {
+				beep: 'boop',
+				pirate: 'ninja'
 			});
 
 			t.end();

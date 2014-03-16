@@ -10,7 +10,8 @@ var _ = require('lodash'),
 
 	CLI_SPY = '__cli-spy__',
 	SPY_PLACEHOLDER = '/*__spy__*/',
-	ARGS_STR_REGEX = /__spy__(.*)__spy__/,
+	EXEC_STR_REGEX = /__spy__(.*?)__spy__/g,
+	EXEC_DETAILS_REGEX = /__spy__(.*?)__spy__/,
 	ARGS_SPY = 'process.stdout.write(\'__spy__\' + JSON.stringify(Array.prototype.slice.call(arguments)) + \'__spy__\\n\');',
 	STUB_CLI_TEMPLATE = '#!/usr/bin/env node\n(%s());\n\nrequire(\'%s\');',
 
@@ -27,6 +28,13 @@ function tearDown(cwd) {
 	return unlink(path.join(cwd, CLI_SPY));
 }
 
+function parseExecution(spiedExecStr) {
+	var argStr = spiedExecStr.match(EXEC_DETAILS_REGEX)[1];
+	return {
+		args: JSON.parse(argStr)
+	};
+}
+
 function execCli(argStr, options) {
 	var deferred = Q.defer(),
 		cmd = path.join(options.cwd, CLI_SPY) + ' ' + argStr;
@@ -40,16 +48,23 @@ function execCli(argStr, options) {
 			return deferred.reject(err);
 		}
 
+		var spiedExecStrs = stdout.match(EXEC_STR_REGEX),
+			executions;
+
 		try {
-			var spiedArgStr = stdout.match(ARGS_STR_REGEX)[1];
-			deferred.resolve({
-				stdout: stdout,
-				stderr: stderr,
-				args: JSON.parse(spiedArgStr)
-			});
+			executions = _.map(spiedExecStrs, parseExecution);
 		} catch(e) {
-			deferred.reject(e);
+			return deferred.reject(e);
 		}
+
+		deferred.resolve({
+			stdout: stdout,
+			stderr: stderr,
+			executions: executions,
+
+			// For backwards compat
+			args: executions[0].args
+		});
 	});
 
 	return deferred.promise;
