@@ -222,6 +222,37 @@ test('it reports the arguments for each execution of the stub index by the cli',
 		});
 });
 
+test('it supports multiple instances of the spy placeholder', function(t) {
+	var spy = cliSpy('./test/stub-cli', function() {
+			function neverExecuted() {
+				/*__spy__*/
+			}
+			require('./test/stub-index').init = function() {
+				/*__spy__*/
+			};
+		}),
+		promiseResolved = false;
+
+	setTimeout(function() {
+		if (!promiseResolved) {
+			t.ok(promiseResolved, '`exec` promise should have been resolved');
+			t.end();
+		}
+	}, 500);
+
+	spy.exec('')
+		.then(function(result) {
+			promiseResolved = true;
+
+			t.ok(result);
+			t.equal(result.executions.length, 1);
+
+			t.end();
+		}, function(err) {
+			t.fail(err);
+		});
+});
+
 test('it executes the spy in the given cwd', function(t) {
 	var cwd = path.join(process.cwd(), 'test'),
 		spy = cliSpy('./stub-cli', function() {

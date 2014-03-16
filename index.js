@@ -9,7 +9,7 @@ var _ = require('lodash'),
 	unlink = Q.nfbind(fs.unlink),
 
 	CLI_SPY = '__cli-spy__',
-	SPY_PLACEHOLDER = '/*__spy__*/',
+	SPY_PLACEHOLDER = /\/\*__spy__\*\//g,
 	EXEC_STR_REGEX = /__spy__(.*?)__spy__/g,
 	EXEC_DETAILS_REGEX = /__spy__(.*?)__spy__/,
 	ARGS_SPY = 'process.stdout.write(\'__spy__\' + JSON.stringify(Array.prototype.slice.call(arguments)) + \'__spy__\\n\');',
