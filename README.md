@@ -71,4 +71,8 @@ The result of executing the CLI (either resolved via promise or returned via cal
 
 - **stdout** any output sent to `stdout` by the CLI. *Note:* this will also include the serialised arguments printed by the spy.
 - **stderr** any output sent to `stderr` by the CLI.
-- **args** JSON representation of the `arguments` passed to the stub main function.
+- **executions** array of information on each execution of the stub main function:
+  - **args** JSON representation of the `arguments` passed
+
+For backwards compatibility, the result also includes the following property:
+- **args** JSON representation of the `arguments` passed to the stub main function (of the first execution only).
