@@ -8,7 +8,7 @@ Helper utility for testing isolated cli modules.
 Usage
 =====
 
-Example usage (using [mocha](http://visionmedia.github.io/mocha/)) assuming the following application structure:
+Example usage (using [mocha](http://mochajs.org/)) assuming the following application structure:
 
 - a main module in `./lib/index.js` with an `init()` method
 - a cli module in `./lib/cli.js` whose sole purpose is to init the main module with the parsed args
